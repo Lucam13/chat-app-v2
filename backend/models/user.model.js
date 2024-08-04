@@ -1,17 +1,14 @@
 import mongoose from "mongoose";
 
-
 const userSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
       required: true,
-      trim: true,
     },
-    userName: {
+    username: {
       type: String,
       required: true,
-
       unique: true,
     },
     password: {
@@ -19,6 +16,16 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
+    gender: {
+      type: String,
+      required: true,
+      enum: ["male", "female"],
+    },
+    profilePic: {
+      type: String,
+      default: "",
+    },
+    // createdAt, updatedAt => Member since <createdAt>
   },
   { timestamps: true }
 );
