@@ -13,7 +13,7 @@ const SearchInput = () => {
     e.preventDefault();
     if (!search) return;
     if (search.length < 3) {
-      return toast.error("Search term must be at least 3 characters long");
+      return toast.error("La busqueda debe tener al menos 3 caracteres!");
     }
 
     const conversation = conversations.find((c) =>
@@ -23,18 +23,18 @@ const SearchInput = () => {
     if (conversation) {
       setSelectedConversation(conversation);
       setSearch("");
-    } else toast.error("No such user found!");
+    } else toast.error("No se encuentra el area!");
   };
   return (
     <form onSubmit={handleSubmit} className="flex items-center gap-2">
       <input
         type="text"
-        placeholder="Search…"
-        className="input input-bordered rounded-full"
+        placeholder="Buscar"
+        className="input input-bordered rounded-full border-green-800 bg-orange-50"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <button type="submit" className="btn btn-circle bg-sky-500 text-white">
+      <button type="submit" className="btn btn-circle bg-green-800 text-white">
         <IoSearchSharp className="w-6 h-6 outline-none" />
       </button>
     </form>

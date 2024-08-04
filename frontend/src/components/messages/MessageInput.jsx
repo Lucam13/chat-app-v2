@@ -18,8 +18,8 @@ const MessageInput = () => {
       <div className="w-full relative">
         <input
           type="text"
-          className="border text-sm rounded-lg block w-full p-2.5  bg-gray-700 border-gray-600 text-white"
-          placeholder="Send a message"
+          className="border text-sm rounded-lg block w-full p-2.5  bg-orange-50 border-orange-300 text-gray-800 outline-none"
+          placeholder="Escribe tu mensaje"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
