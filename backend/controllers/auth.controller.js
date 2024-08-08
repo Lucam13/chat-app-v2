@@ -1,10 +1,11 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
+import Area from "../models/area.model.js";
 import generateTokenAndSetCookie from "../utils/generateToken.js";
 
 export const signup = async (req, res) => {
   try {
-    const { fullName, username, password, confirmPassword, gender } = req.body;
+    const { fullName, username, password, confirmPassword, gender, areaId } = req.body;
 
     if (password !== confirmPassword) {
       return res.status(400).json({ error: "Passwords don't match" });
@@ -14,6 +15,11 @@ export const signup = async (req, res) => {
 
     if (user) {
       return res.status(400).json({ error: "Username already exists" });
+    }
+
+    const area = await Area.findById(areaId);
+    if (!area) {
+      return res.status(400).json({ error: "Invalid area" });
     }
 
     // HASH PASSWORD HERE
@@ -31,6 +37,7 @@ export const signup = async (req, res) => {
       password: hashedPassword,
       gender,
       profilePic: gender === "male" ? boyProfilePic : girlProfilePic,
+      area: areaId,
     });
 
     if (newUser) {

@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
+    area: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Area",
+    },
     gender: {
       type: String,
       required: true,
