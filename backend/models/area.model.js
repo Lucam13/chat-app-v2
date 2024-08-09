@@ -6,8 +6,15 @@ const AreaSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  description: String,
-});
+  user_id: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  }],
+},
+{
+  strictPopulate: false,
+}
+);
 
 const Area = mongoose.model("Area", AreaSchema);
 

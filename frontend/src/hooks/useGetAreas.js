@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import toast from "react-hot-toast";
+
 
 const useGetAreas = () => {
   const [areas, setAreas] = useState([]);
@@ -9,11 +10,15 @@ const useGetAreas = () => {
   useEffect(() => {
     const fetchAreas = async () => {
       try {
-        const response = await axios.get("/api/areas");
-        setAreas(response.data);
+        const response = await fetch("/api/areas");
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        setAreas(data);
         setLoading(false);
       } catch (err) {
+        toast.error(err.message);
         setError(err);
+      } finally {
         setLoading(false);
       }
     };

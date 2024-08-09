@@ -5,7 +5,7 @@ import useConversation from "../../zustand/useConversation";
 const Message = ({ message }) => {
   const { authUser } = useAuthContext();
   const { selectedConversation } = useConversation();
-  const fromMe = message.senderId === authUser._id;
+  const fromMe = message.senderId === authUser.areaId;
   const formattedTime = extractTime(message.createdAt);
   const chatClassName = fromMe ? "chat-end" : "chat-start";
   const profilePic = fromMe
@@ -15,7 +15,7 @@ const Message = ({ message }) => {
 
   const shakeClass = message.shouldShake ? "shake" : "";
 
-  const senderName = fromMe ? authUser.username : selectedConversation?.fullName;
+  const senderName = fromMe ? authUser.username : selectedConversation?.name;
 
   return (
     <div className={`chat ${chatClassName}`}>

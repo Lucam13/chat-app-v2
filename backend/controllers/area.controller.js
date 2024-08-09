@@ -12,9 +12,10 @@ export const createArea = async (req, res) => {
 
 export const getAreas = async (req, res) => {
     try {
-        const areas = await Area.find();
+        const areas = await Area.find()
+        .populate('username')
         res.status(200).json(areas);
     } catch (error) {
         res.status(404).json({ error: error.message });
     }
-}
+};
