@@ -5,12 +5,14 @@ import useConversation from "../../zustand/useConversation";
 const Message = ({ message }) => {
   const { authUser } = useAuthContext();
   const { selectedConversation } = useConversation();
-  const fromMe = message.senderId === authUser.areaId;
+  console.log(selectedConversation);
+  const fromMe = message.senderId === authUser._id;
+  console.log(fromMe);
   const formattedTime = extractTime(message.createdAt);
   const chatClassName = fromMe ? "chat-end" : "chat-start";
   const profilePic = fromMe
     ? authUser.profilePic
-    : selectedConversation?.profilePic;
+    : selectedConversation?.name
   const bubbleBgColor = fromMe ? "bg-orange-300" : "bg-green-500";
 
   const shakeClass = message.shouldShake ? "shake" : "";

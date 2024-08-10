@@ -19,3 +19,17 @@ export const getAreas = async (req, res) => {
         res.status(404).json({ error: error.message });
     }
 };
+
+export const getAreasForSidebar = async (req, res) => {
+    try {
+      const loggedInArea = req.user.area;
+  
+      const filteredAreas = await Area.find({ _id: { $ne: loggedInArea } }).populate("user_id",'username');
+      
+      res.status(200).json(filteredAreas);
+    } catch (error) {
+      console.log("Error in getAreasForSidebar controller", error.message);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  };
+  
