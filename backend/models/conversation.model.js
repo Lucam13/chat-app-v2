@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const conversationSchema = new mongoose.Schema(
   {
-    participants: [
+    areas: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Area",
         required: true,
       },
     ],

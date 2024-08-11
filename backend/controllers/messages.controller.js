@@ -5,22 +5,25 @@ import { getReceiverSocketId, io } from "../socket/socket.js";
 export const sendMessage = async (req, res) => {
   try {
     const { message } = req.body;
-    const { id: receiverId } = req.params;
-    const senderId = req.user._id;
+    const { id: receiverAreaId } = req.params; // Area ID
+    const senderUserId = req.user._id; // User ID of the sender
+    const senderAreaId = req.user.area._id; // Area ID of the sender's area
 
-    const conversation = await Conversation.findOne({
-      participants: { $all: [senderId, receiverId] },
+    // Find or create a conversation between these areas
+    let conversation = await Conversation.findOne({
+      areas: { $all: [senderAreaId, receiverAreaId] },
     });
 
     if (!conversation) {
       conversation = await Conversation.create({
-        participants: [senderId, receiverId],
+        areas: [senderAreaId, receiverAreaId],
       });
     }
 
+    // Create the new message with senderId as the userId
     const newMessage = new Message({
-      senderId,
-      receiverId,
+      senderId: senderUserId, // User who sends the message
+      receiverId: receiverAreaId, // The area that receives the message
       message,
     });
 
@@ -28,14 +31,12 @@ export const sendMessage = async (req, res) => {
       conversation.messages.push(newMessage._id);
     }
 
-    //await conversation.save();
-    //await newMessage.save();
+    // Save the conversation and the new message
     await Promise.all([conversation.save(), newMessage.save()]);
 
-    //socket io funcionality
-    const receiverSocketId = getReceiverSocketId(receiverId);
+    // Socket.io functionality to notify the receiver
+    const receiverSocketId = getReceiverSocketId(receiverAreaId);
     if (receiverSocketId) {
-      // used to send events to a specific client
       io.to(receiverSocketId).emit("newMessage", newMessage);
     }
 
@@ -48,12 +49,12 @@ export const sendMessage = async (req, res) => {
 
 export const getMessages = async (req, res) => {
   try {
-    const { id: userToChatId } = req.params;
-    const senderId = req.user._id;
+    const { id: receiverAreaId } = req.params; // Area ID
+    const senderAreaId = req.user.area._id; // Area ID of the sender's area
 
     const conversation = await Conversation.findOne({
-      participants: { $all: [senderId, userToChatId] },
-    }).populate("messages"); // not reference but actual messages
+      areas: { $all: [senderAreaId, receiverAreaId] },
+    }).populate("messages"); // Populate messages to get actual data
 
     if (!conversation) {
       return res.status(200).json([]);
@@ -63,7 +64,7 @@ export const getMessages = async (req, res) => {
 
     res.status(200).json(messages);
   } catch (error) {
-    console.log("Error in sendMessage controller", error.message);
+    console.log("Error in getMessages controller", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };

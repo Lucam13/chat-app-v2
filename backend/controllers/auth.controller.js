@@ -1,10 +1,11 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
+import Area from "../models/area.model.js";
 import generateTokenAndSetCookie from "../utils/generateToken.js";
 
 export const signup = async (req, res) => {
   try {
-    const { fullName, username, password, confirmPassword, gender } = req.body;
+    const { fullName, username, password, confirmPassword, gender, areaId } = req.body;
 
     if (password !== confirmPassword) {
       return res.status(400).json({ error: "Passwords don't match" });
@@ -14,6 +15,11 @@ export const signup = async (req, res) => {
 
     if (user) {
       return res.status(400).json({ error: "Username already exists" });
+    }
+
+    const area = await Area.findById(areaId);
+    if (!area) {
+      return res.status(400).json({ error: "Invalid area" });
     }
 
     // HASH PASSWORD HERE
@@ -31,18 +37,22 @@ export const signup = async (req, res) => {
       password: hashedPassword,
       gender,
       profilePic: gender === "male" ? boyProfilePic : girlProfilePic,
+      area: areaId,
     });
 
     if (newUser) {
       // Generate JWT token here
       generateTokenAndSetCookie(newUser._id, res);
       await newUser.save();
+      area.user_id.push(newUser._id);
+      await area.save();
 
       res.status(201).json({
         _id: newUser._id,
         fullName: newUser.fullName,
         username: newUser.username,
         profilePic: newUser.profilePic,
+        area: area.name
       });
     } else {
       res.status(400).json({ error: "Invalid user data" });
@@ -73,6 +83,7 @@ export const login = async (req, res) => {
       fullName: user.fullName,
       username: user.username,
       profilePic: user.profilePic,
+      areaId: user.area,
     });
   } catch (error) {
     console.log("Error in login controller", error.message);

@@ -12,6 +12,7 @@ const useListenMessages = () => {
 
   useEffect(() => {
     socket?.on("newMessage", (newMessage) => {
+      console.log(newMessage);
       if (selectedConversation?._id === newMessage.senderId) {
         newMessage.shouldShake = true;
         const sound = new Audio(notificationSound);
