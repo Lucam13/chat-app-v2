@@ -18,13 +18,12 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
       >
         <div className={`avatar ${isOnline ? "online" : ""}`}>
           <div className="w-12 rounded-full">
-            <img src={conversation.profilePic} alt="user avatar" />
           </div>
         </div>
 
         <div className="flex flex-col flex-1">
           <div className="flex gap-3 justify-between">
-            <p className="font-bold text-gray-700">{conversation.fullName}</p>
+            <p className="font-bold text-gray-700">{conversation.name}</p>
             <span className="text-xl">{emoji}</span>
           </div>
         </div>
