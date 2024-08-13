@@ -23,7 +23,7 @@ const MessageContainer = () => {
           <div className="bg-orange-300 px-4 py-2 mb-2">
             <span className="label-text text-white">Para:</span>{" "}
             <span className="text-white font-bold">
-              {selectedConversation.fullName}
+              {selectedConversation.name}
             </span>
           </div>
           <Messages />

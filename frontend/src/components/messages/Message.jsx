@@ -1,23 +1,25 @@
 import { useAuthContext } from "../../context/AuthContext";
 import { extractTime } from "../../utils/extractTime";
 import useConversation from "../../zustand/useConversation";
+import useUsers from "../../hooks/useGetUsers";
 
 const Message = ({ message }) => {
   const { authUser } = useAuthContext();
   const { selectedConversation } = useConversation();
-  console.log(selectedConversation);
+  const { users, loading } = useUsers();
+  console.log(users);
   const fromMe = message.senderId === authUser._id;
-  console.log(fromMe);
   const formattedTime = extractTime(message.createdAt);
   const chatClassName = fromMe ? "chat-end" : "chat-start";
+  const sender = users?.find((user) => user._id === message.senderId);
   const profilePic = fromMe
     ? authUser.profilePic
-    : selectedConversation?.name
+    : selectedConversation?.name && sender?.profilePic; ;
   const bubbleBgColor = fromMe ? "bg-orange-300" : "bg-green-500";
 
   const shakeClass = message.shouldShake ? "shake" : "";
 
-  const senderName = fromMe ? authUser.username : selectedConversation?.name;
+  const senderName = fromMe ? authUser.fullName : selectedConversation?.name && sender?.fullName;
 
   return (
     <div className={`chat ${chatClassName}`}>

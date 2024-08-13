@@ -4,8 +4,8 @@ import { getAreas, createArea, getAreasForSidebar} from "../controllers/area.con
 
 const router = express.Router();
 
-//router.get("/",  getAreas);
-router.get("/", protectRoute, getAreasForSidebar);
+router.get("/",  getAreas);
+router.get("/sidebar", protectRoute, getAreasForSidebar);
 router.post("/", createArea);
 
 export default router;
