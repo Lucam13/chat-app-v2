@@ -4,42 +4,41 @@ import useConversation from "../../zustand/useConversation";
 import useUsers from "../../hooks/useGetUsers";
 
 const Message = ({ message }) => {
-  const { authUser } = useAuthContext();
-  const { selectedConversation } = useConversation();
-  const { users, loading } = useUsers();
-  console.log(users);
-  const fromMe = message.senderId === authUser._id;
-  const formattedTime = extractTime(message.createdAt);
-  const chatClassName = fromMe ? "chat-end" : "chat-start";
-  const sender = users?.find((user) => user._id === message.senderId);
-  const profilePic = fromMe
-    ? authUser.profilePic
-    : selectedConversation?.name && sender?.profilePic; ;
-  const bubbleBgColor = fromMe ? "bg-orange-300" : "bg-green-500";
+	const { authUser } = useAuthContext();
+	const { selectedConversation } = useConversation();
+	const { users, loading } = useUsers();
+	const fromMe = message.senderId === authUser._id;
+	const formattedTime = extractTime(message.createdAt);
+	const chatClassName = fromMe ? "chat-end" : "chat-start";
+	const sender = users?.find((user) => user._id === message.senderId);
+	const profilePic = fromMe
+		? authUser.profilePic
+		: selectedConversation?.name && sender?.profilePic;
+	const bubbleBgColor = fromMe ? "bg-orange-300" : "bg-green-500";
 
-  const shakeClass = message.shouldShake ? "shake" : "";
+	const shakeClass = message.shouldShake ? "shake" : "";
 
-  const senderName = fromMe ? authUser.fullName : selectedConversation?.name && sender?.fullName;
+	const senderName = fromMe
+		? authUser.fullName
+		: selectedConversation?.name && sender?.fullName;
 
-  return (
-    <div className={`chat ${chatClassName}`}>
-      <div className="chat-image avatar">
-        <div className="w-10 rounded-full">
-          <img alt="Tailwind CSS chat bubble component" src={profilePic} />
-        </div>
-      </div>
-      <div
-        className={`chat-bubble text-white ${bubbleBgColor} ${shakeClass} pb-2`}
-      >
-        {message.message}
-        
-        
-      </div>
-      <div className="chat-footer opacity-50 text-xs flex gap-1 items-center text-black">
-        {formattedTime}
-        <span className="font-bold">{senderName} </span>
-      </div>
-    </div>
-  );
+	return (
+		<div className={`chat ${chatClassName}`}>
+			<div className="chat-image avatar">
+				<div className="w-10 rounded-full">
+					<img alt="Tailwind CSS chat bubble component" src={profilePic} />
+				</div>
+			</div>
+			<div
+				className={`chat-bubble text-white ${bubbleBgColor} ${shakeClass} pb-2`}
+			>
+				{message.message}
+			</div>
+			<div className="chat-footer opacity-50 text-xs flex gap-1 items-center text-black">
+				{formattedTime}
+				<span className="font-bold">{senderName} </span>
+			</div>
+		</div>
+	);
 };
 export default Message;

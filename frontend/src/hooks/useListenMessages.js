@@ -6,22 +6,23 @@ import useConversation from "../zustand/useConversation";
 import notificationSound from "../assets/sounds/notification.mp3";
 
 const useListenMessages = () => {
-  const { socket } = useSocketContext();
-  const { messages, setMessages } = useConversation();
-  const { selectedConversation } = useConversation();
+	const { socket } = useSocketContext();
+	const { messages, setMessages } = useConversation();
+	const { selectedConversation } = useConversation();
 
-  useEffect(() => {
-    socket?.on("newMessage", (newMessage) => {
-      console.log(newMessage);
-      if (selectedConversation?._id === newMessage.senderId) {
-        newMessage.shouldShake = true;
-        const sound = new Audio(notificationSound);
-        sound.play();
-        setMessages([...messages, newMessage]);
-      }
-    });
-
-    return () => socket?.off("newMessage");
-  }, [socket, setMessages, messages]);
+	useEffect(() => {
+		socket?.on("newMessageFromArea", (newMessage) => {
+			console.log(newMessage);
+			if (selectedConversation?._id === newMessage.areaId) {
+				newMessage.shouldShake = true;
+				const sound = new Audio(notificationSound);
+				sound.play();
+				setMessages([...messages, newMessage]);
+			}
+		});
+		return () => {
+			socket?.off("newMessageFromArea");
+		};
+	}, [socket, setMessages, messages]);
 };
 export default useListenMessages;
