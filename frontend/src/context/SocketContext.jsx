@@ -17,7 +17,7 @@ export const SocketContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		if (authUser) {
-			const socket = io("https://chat-epar.onrender.com", {
+			const socket = io("https://mensajeria-epar.vercel.app/", {
 				query: { userId: authUser._id, areaId: selectedConversation?._id },
 			});
 
