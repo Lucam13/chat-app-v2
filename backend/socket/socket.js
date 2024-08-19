@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
 	console.log("a user connected", socket.id);
 
 	const userId = socket.handshake.query.userId;
-	const areaId = socket.handshake.query.areaId;
+	const areaId = socket.handshake.query.areaId === "undefined" ? "lobby" : socket.handshake.query.areaId;
 
 	if (userId && areaId) {
 		userSocketMap[userId] = socket.id;
@@ -39,7 +39,12 @@ io.on("connection", (socket) => {
 		console.log("Area user map:", areaUserMap);
 
 		// Emitir los usuarios conectados en la misma área
-		io.to(socket.id).emit("getOnlineUsersInArea", areaUserMap[areaId]);
+		areaUserMap[areaId].forEach((id) => {
+			const userSocketId = userSocketMap[id];
+			if (userSocketId) {
+				io.to(userSocketId).emit("getOnlineUsersInArea", areaUserMap);
+			}
+		});
 	}
 
 	socket.on(
@@ -85,7 +90,12 @@ io.on("connection", (socket) => {
 
 		// Emit updated list of online users in the area
 		if (areaId && areaUserMap[areaId]) {
-			io.emit("getOnlineUsersInArea", areaUserMap[areaId]);
+			areaUserMap[areaId].forEach((id) => {
+				const userSocketId = userSocketMap[id];
+				if (userSocketId) {
+					io.to(userSocketId).emit("getOnlineUsersInArea", areaUserMap);
+				}
+			});
 		}
 	});
 });

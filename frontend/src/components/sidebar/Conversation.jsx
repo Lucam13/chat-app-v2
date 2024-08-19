@@ -6,7 +6,8 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
 
   const isSelected = selectedConversation?._id === conversation._id;
   const { onlineUsers } = useSocketContext();
-  const isOnline = onlineUsers.includes(conversation._id);
+  const areaUsers = conversation.user_id;
+  const isOnline = areaUsers.some((user) => Object.values(onlineUsers).flat().includes(user._id));
 
   return (
     <>
