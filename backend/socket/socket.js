@@ -44,7 +44,6 @@ io.on("connection", (socket) => {
 		// Emitir los usuarios conectados en la misma área
 		areaUserMap[areaId].forEach((id) => {
 			const userSocketId = userSocketMap[id];
-
 			if (userSocketId) {
 				io.to(userSocketId).emit("getOnlineUsersInArea", areaUserMap);
 			}
