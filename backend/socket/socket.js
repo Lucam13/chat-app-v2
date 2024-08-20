@@ -20,10 +20,13 @@ export const getReceiverSocketId = (receiverId) => {
 };
 
 io.on("connection", (socket) => {
-	console.log("a user connected", socket.id);
+	// console.log("a user connected", socket.id);
 
 	const userId = socket.handshake.query.userId;
-	const areaId = socket.handshake.query.areaId;
+	const areaId =
+		socket.handshake.query.areaId === "undefined"
+			? "lobby"
+			: socket.handshake.query.areaId;
 
 	if (userId && areaId) {
 		userSocketMap[userId] = socket.id;
@@ -35,11 +38,17 @@ io.on("connection", (socket) => {
 			areaUserMap[areaId].push(userId);
 		}
 
-		console.log("User socket map:", userSocketMap);
-		console.log("Area user map:", areaUserMap);
+		// console.log("User socket map:", userSocketMap);
+		// console.log("Area user map:", areaUserMap);
 
 		// Emitir los usuarios conectados en la misma área
-		io.to(socket.id).emit("getOnlineUsersInArea", areaUserMap[areaId]);
+		areaUserMap[areaId].forEach((id) => {
+			const userSocketId = userSocketMap[id];
+
+			if (userSocketId) {
+				io.to(userSocketId).emit("getOnlineUsersInArea", areaUserMap);
+			}
+		});
 	}
 
 	socket.on(
@@ -48,7 +57,7 @@ io.on("connection", (socket) => {
 			if (areaUserMap[areaId]) {
 				areaUserMap[areaId]
 					// Enviamos el mensaje a todos los usuarios en el área excepto al remitente
-					.filter((id) => id !== senderId)
+					.filter((id) => id !== senderId._id)
 					.forEach((userId) => {
 						const receiverSocketId = userSocketMap[userId];
 						if (receiverSocketId) {
@@ -80,12 +89,17 @@ io.on("connection", (socket) => {
 			}
 		}
 
-		console.log("Updated user socket map:", userSocketMap);
-		console.log("Updated area user map:", areaUserMap);
+		// console.log("Updated user socket map:", userSocketMap);
+		// console.log("Updated area user map:", areaUserMap);
 
 		// Emit updated list of online users in the area
 		if (areaId && areaUserMap[areaId]) {
-			io.emit("getOnlineUsersInArea", areaUserMap[areaId]);
+			areaUserMap[areaId].forEach((id) => {
+				const userSocketId = userSocketMap[id];
+				if (userSocketId) {
+					io.to(userSocketId).emit("getOnlineUsersInArea", areaUserMap);
+				}
+			});
 		}
 	});
 });

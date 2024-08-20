@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
 
 const useUsers = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+	const [users, setUsers] = useState([]);
+	const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await fetch("/api/users"); // Reemplaza con la ruta correcta de tu API
-        const data = await res.json();
-        setUsers(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				const res = await fetch("/api/users"); // Reemplaza con la ruta correcta de tu API
+				const data = await res.json();
+				setUsers(data);
+			} catch (error) {
+				console.error("Error fetching users:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
 
-    fetchUsers();
-  }, []);
+		fetchUsers();
+	}, []);
 
-  return { users, loading };
+	return { users, loading };
 };
 
 export default useUsers;

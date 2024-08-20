@@ -12,7 +12,6 @@ const useListenMessages = () => {
 
 	useEffect(() => {
 		socket?.on("newMessageFromArea", (newMessage) => {
-			console.log(newMessage);
 			if (selectedConversation?._id === newMessage.areaId) {
 				newMessage.shouldShake = true;
 				const sound = new Audio(notificationSound);

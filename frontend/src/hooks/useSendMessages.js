@@ -2,11 +2,13 @@ import { useState } from "react";
 import useConversation from "../zustand/useConversation";
 import toast from "react-hot-toast";
 import { useSocketContext } from "../context/SocketContext";
+import { useAuthContext } from "../context/AuthContext";
 
 const useSendMessage = () => {
 	const [loading, setLoading] = useState(false);
 	const { messages, setMessages, selectedConversation } = useConversation();
 	const { socket } = useSocketContext();
+	const { authUser } = useAuthContext();
 
 	const emitMessageToArea = ({ message, areaId, senderId, receiverId }) => {
 		socket.emit("sendMessageToArea", {
@@ -37,11 +39,25 @@ const useSendMessage = () => {
 			emitMessageToArea({
 				message: data.message,
 				areaId: selectedConversation._id,
-				senderId: data.senderId,
+				senderId: {
+					_id: authUser._id,
+					fullName: authUser.fullName,
+					profilePic: authUser.profilePic,
+				},
 				receiverId: data.receiverId,
 			});
 
-			setMessages([...messages, data]);
+			setMessages([
+				...messages,
+				{
+					...data,
+					senderId: {
+						_id: authUser._id,
+						fullName: authUser.fullName,
+						profilePic: authUser.profilePic,
+					},
+				},
+			]);
 		} catch (error) {
 			toast.error(error.message);
 		} finally {
